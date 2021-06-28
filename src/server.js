@@ -7,32 +7,50 @@ import { fileURLToPath } from "url";
 
 // import productRouter from "./services/products/index.js";
 import reviewsRouter from "./services/reviews/index.js";
-
-// import {
-//   badRequestErrorHandler,
-//   notFoundErrorHandler,
-//   catchAllErrorHandler,
-// } from "./errorHandlers.js";
+import {
+  badRequestErrorHandler,
+  notFoundErrorHandler,
+  catchAllErrorHandler,
+  forbiddenHandler,
+} from "./errorHandlers.js";
 dotenv.config();
 console.log(process.env.PORT);
 const { PORT } = process.env;
 const server = express();
-server.use(express.json());
-
 const publicFolderPath = join(
   dirname(fileURLToPath(import.meta.url)),
   "../public"
 );
 
+// const whitelist = [
+//   process.env.FRONTEND_DEV_URL,
+//   process.env.FRONTEND_CLOUD_URL,
+// ];
+
+// const corsOptions = {
+//   origin: function (origin, next) {
+//     console.log("ORIGIN", origin);
+//     if (whitelist.indexOf(origin) !== -1) {
+//       next(null, true);
+//     } else {
+//       next(new Error("CORS TROUBLES!!!!!"));
+//     }
+//   },
+// };
+
+//************************************ REQ SERVER IMPORT USES**********************
+server.use(express.json());
+server.use(cors());
 // ******************************************ROUTES***************************
 
 // server.use("/products", productRouter);
 server.use("/reviews", reviewsRouter);
 
 // ************************************ ERROR HANDLERS ******************************
-// server.use(notFoundErrorHandler);
-// server.use(badRequestErrorHandler);
-// server.use(catchAllErrorHandler);
+server.use(notFoundErrorHandler);
+server.use(badRequestErrorHandler);
+server.use(forbiddenHandler);
+server.use(catchAllErrorHandler);
 
 console.table(listEndpoints(server));
 server.listen(PORT, () =>

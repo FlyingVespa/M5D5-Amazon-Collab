@@ -54,7 +54,7 @@ reviewsRouter.get("/:reviewId", async (req, res, next) => {
 });
 
 // 3. POST
-reviewsRouter.post("/", async (req, res, next) => {
+reviewsRouter.post("/", reviewValidation, async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
