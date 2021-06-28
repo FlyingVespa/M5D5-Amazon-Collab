@@ -16,10 +16,16 @@ router.get('/', async (req, res, next) => {
         const fileAsBuffer = fs.readFileSync(productsFilePath)
         const fileAsString = fileAsBuffer.toString()
         const fileAsJson = JSON.parse(fileAsString)
-        res.send(fileAsJson)
-        console.log(fileAsJson)
+        if (req.query.category) {
+            console.log(req.query)
+            const product = fileAsJson.filter(product => product.category === req.query.category)
+            res.send(product)
+        } else {
+            res.send(fileAsJson)
+        }
     } catch (error) {
-        res.sendStatus(500).send({ message: error.message })
+        console.log(error)
+        res.send(500).send({ message: error.message })
     }
 })
 
@@ -68,12 +74,12 @@ router.post('/', async (req, res, next) => {
     }
 })
 
-// router.post('/products/:id/upload', async (req, res, next) => {
-//     const fileAsBuffer = fs.readFileSync(productsFilePath)
-//     const fileAsString = fileAsBuffer.toString()
-//     const fileAsJson = JSON.parse(fileAsString)
-//     const product = fileAsJson.find(product => product.id === req.params.id)
-// })
+router.post('/:id/upload', async (req, res, next) => {
+    //     const fileAsBuffer = fs.readFileSync(productsFilePath)
+    //     const fileAsString = fileAsBuffer.toString()
+    //     const fileAsJson = JSON.parse(fileAsString)
+    //     const product = fileAsJson.find(product => product.id === req.params.id)
+})
 
 //ammend product
 router.put('/:id', async (req, res, next) => {
