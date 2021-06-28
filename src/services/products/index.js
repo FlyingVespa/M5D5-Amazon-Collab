@@ -140,7 +140,10 @@ router.delete("/:id", async (req, res, next) => {
 router.get("/:id/review", async (req, res, next) => {
   try {
     const reviews = await readFile("reviews.json");
-    res.send(reviews);
+    const productReview = reviews.filter(
+      (review) => review.productId !== req.params.id
+    );
+    res.send(productReview);
   } catch (error) {
     next(error);
   }
@@ -150,12 +153,7 @@ router.get("/:id/review", async (req, res, next) => {
 router.get("/:id/review/:reviewId", async (req, res, next) => {
   try {
     const reviews = await readFile("reviews.json");
-    const productReview = reviews.find(
-      (review) => review.productId === req.params.id
-    );
-    const filterReview = productReview.filter(
-      (r) => r._id !== req.params.reviewId
-    );
+    const filterReview = reviews.find((r) => r._id === req.params.reviewId);
 
     if (filterReview) {
       res.send(filterReview);
@@ -173,6 +171,7 @@ router.get("/:id/review/:reviewId", async (req, res, next) => {
 router.post("/:id/review", reviewValidation, async (req, res, next) => {
   try {
     const errors = validationResult(req);
+    console.log(errors);
     if (errors.isEmpty()) {
       const { comment, rate } = req.body;
       const newReview = {
@@ -183,7 +182,6 @@ router.post("/:id/review", reviewValidation, async (req, res, next) => {
         createdAt: new Date(),
         lastModified: new Date(),
       };
-
       const reviews = await readFile("reviews.json");
       reviews.push(newReview);
       writeToFile("reviews.json", reviews);
