@@ -11,6 +11,12 @@ import {
   forbiddenHandler,
 } from "./errorHandlers.js"
 import morgan from "morgan"
+import { fileURLToPath } from "url"
+import { dirname, join } from "path"
+
+const fileName = fileURLToPath(import.meta.url)
+const directoryName = dirname(fileName)
+const publicPath = join(directoryName, "../public")
 
 dotenv.config()
 console.log(process.env.PORT)
@@ -37,6 +43,7 @@ const server = express()
 server.use(express.json())
 server.use(cors())
 server.use(morgan("dev"))
+server.use(express.static(publicPath))
 // ******************************************ROUTES***************************
 
 server.use("/products", productRouter)

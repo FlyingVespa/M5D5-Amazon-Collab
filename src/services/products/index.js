@@ -1,5 +1,5 @@
 import express from "express"
-import fs from "fs"
+import fs from "fs-extra"
 import path, { dirname, join } from "path"
 import { fileURLToPath } from "url"
 import uniqid from "uniqid"
@@ -12,7 +12,10 @@ import createHttpError from "http-errors"
 const fileName = fileURLToPath(import.meta.url)
 const directoryName = dirname(fileName)
 const productsFilePath = path.join(directoryName, "products.json")
+const publicPath = path.join(directoryName, "../../../public")
+const filesFilePath = path.join(directoryName, "files.json")
 const router = express.Router()
+const upload = multer()
 
 //get all products
 router.get("/", async (req, res, next) => {
@@ -77,11 +80,48 @@ router.post("/", async (req, res, next) => {
   }
 })
 
-router.post("/:id/upload", async (req, res, next) => {
-  //     const fileAsBuffer = fs.readFileSync(productsFilePath)
-  //     const fileAsString = fileAsBuffer.toString()
-  //     const fileAsJson = JSON.parse(fileAsString)
-  //     const product = fileAsJson.find(product => product.id === req.params.id)
+router.post("/:id/upload", upload.single("cover"), async (req, res, next) => {
+  try {
+    const { originalname, buffer } = req.file
+    const { title } = req.body
+    await fs.writeFile(join(publicPath, originalname), buffer)
+    const viewUrl = `${req.protocol}://${req.hostname}:4444/${originalname}`
+
+    delete req.file.buffer
+
+    const fileAsBuffer = fs.readFileSync(productsFilePath)
+    const fileAsString = fileAsBuffer.toString()
+    let fileAsJson = JSON.parse(fileAsString)
+    const productIndex = fileAsJson.findIndex(
+      (product) => product._id === req.params.id
+    )
+    if (!productIndex == -1) {
+      return res
+        .status(404)
+        .send({ message: `product with ${req.params.id} not found!` })
+    }
+    const previousProductData = fileAsJson[productIndex]
+    const changedProduct = {
+      ...previousProductData,
+      cover: viewUrl,
+      updatedAt: new Date(),
+    }
+    fileAsJson[productIndex] = changedProduct
+    fs.writeFileSync(productsFilePath, JSON.stringify(fileAsJson))
+    res.send(changedProduct)
+
+    const file = {
+      title: title || originalname,
+      productId: req.params.id,
+      ...req.file,
+      url: viewUrl,
+    }
+    const files = fs.writeFileSync(filesFilePath, JSON.stringify(file))
+    res.send(files)
+  } catch (err) {
+    console.log(err)
+    next(err)
+  }
 })
 
 //ammend product
@@ -94,7 +134,7 @@ router.put("/:id", async (req, res, next) => {
       (product) => product._id === req.params.id
     )
     if (!productIndex == -1) {
-      res
+      return res
         .status(404)
         .send({ message: `product with ${req.params.id} not found!` })
     }
