@@ -1,0 +1,21 @@
+[
+    {
+        "id": "1",
+        "productName": "dsfsdfsd",
+        "description": "sdfsdfsdf",
+        "brand": "sdfsdfsdf",
+        "price": 1000,
+        "category": "dsfsdfsdfs",
+        "updatedAt": "2021-06-28T09:40:43.438Z"
+    },
+    {
+        "id": "gvkvo2u8kqgfz9h9",
+        "productName": "aaaaaaaaaaaaaaaaaaaaa",
+        "description": "sdfsdfsdf",
+        "brand": "sdfsdfsdf",
+        "price": 1000,
+        "category": "aaaaaaaaaaaaaaaaa",
+        "createdAt": "2021-06-28T09:52:00.956Z",
+        "updatedAt": "2021-06-28T09:57:53.657Z"
+    }
+]

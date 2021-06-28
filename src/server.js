@@ -6,7 +6,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 import productRouter from "./services/products/index.js";
-import reviewsRouter from "./services/reviews/index.js";
+// import reviewsRouter from "./services/reviews/index.js";
 
 // import {
 //   badRequestErrorHandler,
@@ -18,6 +18,7 @@ dotenv.config();
 console.log(process.env.PORT);
 const { PORT } = process.env;
 const server = express();
+server.use(express.json())
 
 const publicFolderPath = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -27,7 +28,7 @@ const publicFolderPath = join(
 // ******************************************ROUTES***************************
 
 server.use("/products", productRouter);
-server.use("/reviews", reviewsRouter);
+// server.use("/reviews", reviewsRouter);
 
 // ************************************ ERROR HANDLERS ******************************
 // server.use(notFoundErrorHandler);
