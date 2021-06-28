@@ -1,26 +1,21 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import listEndpoints from "express-list-endpoints";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
-import productRouter from "./services/products/index.js";
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+import listEndpoints from "express-list-endpoints"
+import productRouter from "./services/products/index.js"
 // import reviewsRouter from "./services/reviews/index.js";
 import {
   badRequestErrorHandler,
   notFoundErrorHandler,
   catchAllErrorHandler,
   forbiddenHandler,
-} from "./errorHandlers.js";
+} from "./errorHandlers.js"
+import morgan from "morgan"
 
-dotenv.config();
-console.log(process.env.PORT);
-const { PORT } = process.env;
-const server = express();
-const publicFolderPath = join(
-  dirname(fileURLToPath(import.meta.url)),
-  "../public"
-);
+dotenv.config()
+console.log(process.env.PORT)
+const { PORT } = process.env
+const server = express()
 
 // const whitelist = [
 //   process.env.FRONTEND_DEV_URL,
@@ -39,27 +34,27 @@ const publicFolderPath = join(
 // };
 
 //************************************ REQ SERVER IMPORT USES**********************
-server.use(express.json());
-server.use(cors());
+server.use(express.json())
+server.use(cors())
+server.use(morgan("dev"))
 // ******************************************ROUTES***************************
 
-server.use("/products", productRouter);
-// server.use("/reviews", reviewsRouter);
+server.use("/products", productRouter)
 
 // ************************************ ERROR HANDLERS ******************************
-server.use(notFoundErrorHandler);
-server.use(badRequestErrorHandler);
-server.use(forbiddenHandler);
-server.use(catchAllErrorHandler);
+server.use(notFoundErrorHandler)
+server.use(badRequestErrorHandler)
+server.use(forbiddenHandler)
+server.use(catchAllErrorHandler)
 
-console.table(listEndpoints(server));
+console.table(listEndpoints(server))
 server.listen(PORT, () =>
   console.log(`✅ A portal has opened on ${PORT} , enter if you dare`)
-);
+)
 
 server.on("error", (error) =>
   console.log(`❌ Server is not running due to the following oopsie : ${error}`)
-);
+)
 // You are in charge of building the Backend using NodeJS + Express. The backend should include the following features:
 // CRUD for Products ( /products GET, POST, DELETE, PUT)
 // CRUD for Reviews ( /reviews GET, POST, DELETE, PUT)
