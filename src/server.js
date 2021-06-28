@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 
 import productRouter from "./services/products/index.js";
 import reviewsRouter from "./services/reviews/index.js";
+
 // import {
 //   badRequestErrorHandler,
 //   notFoundErrorHandler,
@@ -23,8 +24,24 @@ const publicFolderPath = join(
   "../public"
 );
 
-server.use("/product", productRouter);
+// ******************************************ROUTES***************************
+
+server.use("/products", productRouter);
 server.use("/reviews", reviewsRouter);
+
+// ************************************ ERROR HANDLERS ******************************
+// server.use(notFoundErrorHandler);
+// server.use(badRequestErrorHandler);
+// server.use(catchAllErrorHandler);
+
+console.table(listEndpoints(server));
+server.listen(PORT, () =>
+  console.log(`✅ A portal has opened on ${PORT} , enter if you dare`)
+);
+
+server.on("error", (error) =>
+  console.log(`❌ Server is not running due to the following oopsie : ${error}`)
+);
 // You are in charge of building the Backend using NodeJS + Express. The backend should include the following features:
 // CRUD for Products ( /products GET, POST, DELETE, PUT)
 // CRUD for Reviews ( /reviews GET, POST, DELETE, PUT)
