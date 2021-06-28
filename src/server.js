@@ -5,7 +5,6 @@ import listEndpoints from "express-list-endpoints";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
-// import productRouter from "./services/products/index.js";
 import reviewsRouter from "./services/reviews/index.js";
 import {
   badRequestErrorHandler,
@@ -13,6 +12,7 @@ import {
   catchAllErrorHandler,
   forbiddenHandler,
 } from "./errorHandlers.js";
+
 dotenv.config();
 console.log(process.env.PORT);
 const { PORT } = process.env;
@@ -43,8 +43,10 @@ server.use(express.json());
 server.use(cors());
 // ******************************************ROUTES***************************
 
-// server.use("/products", productRouter);
+
+server.use("/products", productRouter);
 server.use("/reviews", reviewsRouter);
+
 
 // ************************************ ERROR HANDLERS ******************************
 server.use(notFoundErrorHandler);
