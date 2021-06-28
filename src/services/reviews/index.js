@@ -58,14 +58,12 @@ reviewsRouter.post("/", async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      const { text, first_name, last_name, rate } = req.body;
+      const { comment, productId, rate } = req.body;
       const newReview = {
         _id: uniqid(),
-        text,
-        first_name,
-        last_name,
+        comment,
+        productId,
         rate,
-        avatar: `https://ui-avatars.com/api/?name=${first_name}+${last_name}`,
         createdAt: new Date(),
         lastModified: new Date(),
       };
@@ -89,16 +87,15 @@ reviewsRouter.put("/:reviewId", async (req, res, next) => {
     const remainingReviews = reviews.filter(
       (review) => review._id !== req.params.reviewId
     );
-    const { text, first_name, last_name, rate, createdAt } = req.body;
+    const { comment, productId, rate, ...createdAt } = req.body;
     const updatedReview = {
       ...req.body,
       _id: req.params.reviewId,
-      text,
-      first_name,
-      last_name,
+      comment,
+      productId,
+      ...createdAt,
       rate,
-      avatar: `https://ui-avatars.com/api/?name=${first_name}+${last_name}`,
-      createdAt,
+
       lastModified: new Date(),
     };
     console.log(remainingReviews);
@@ -125,8 +122,11 @@ reviewsRouter.delete("/:reviewId", async (req, res, next) => {
     await writeToFile("authors.json", remainingReviews);
     res.status(200).send(`${req.params.reviewId} has been deleted`);
   } catch (error) {
-    next(error);
+    // next(error);
   }
 });
+
+// GET SPECIFITC PRODUCT REVIEW
+// reviewsRouter("/");
 
 export default reviewsRouter;
