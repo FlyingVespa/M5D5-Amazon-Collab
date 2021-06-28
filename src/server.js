@@ -5,7 +5,7 @@ import listEndpoints from "express-list-endpoints";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import productRouter from "./services/products/index.js";
-import reviewsRouter from "./services/reviews/index.js";
+// import reviewsRouter from "./services/reviews/index.js";
 import {
   badRequestErrorHandler,
   notFoundErrorHandler,
@@ -44,7 +44,7 @@ server.use(cors());
 // ******************************************ROUTES***************************
 
 server.use("/products", productRouter);
-server.use("/reviews", reviewsRouter);
+// server.use("/reviews", reviewsRouter);
 
 // ************************************ ERROR HANDLERS ******************************
 server.use(notFoundErrorHandler);

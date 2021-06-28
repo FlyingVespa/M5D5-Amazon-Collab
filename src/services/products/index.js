@@ -5,6 +5,10 @@ import { fileURLToPath } from "url";
 import uniqid from "uniqid";
 import multer from "multer";
 import reviewValidation from "../reviews/reviewValidation.js";
+import { validationResult, body } from "express-validator";
+import { readFile, getFilePath, writeToFile } from "../reviews/index.js";
+import createHttpError from "http-errors";
+
 const fileName = fileURLToPath(import.meta.url);
 const directoryName = dirname(fileName);
 const productsFilePath = path.join(directoryName, "products.json");
@@ -142,6 +146,29 @@ router.get("/:id/review", async (req, res, next) => {
   }
 });
 
+// Get single
+router.get("/:id/review/:reviewId", async (req, res, next) => {
+  try {
+    const reviews = await readFile("reviews.json");
+    const productReview = reviews.find(
+      (review) => review.productId === req.params.id
+    );
+    const filterReview = productReview.filter(
+      (r) => r._id !== req.params.reviewId
+    );
+
+    if (filterReview) {
+      res.send(filterReview);
+    } else {
+      next(
+        createHttpError(404, `the review ${req.params.reviewId} was not found`)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 // POST
 router.post("/:id/review", reviewValidation, async (req, res, next) => {
   try {
@@ -162,7 +189,7 @@ router.post("/:id/review", reviewValidation, async (req, res, next) => {
       writeToFile("reviews.json", reviews);
       res.status(201).send({ _id: newReview._id });
     } else {
-      next(createError(400, { errorsList: errors }));
+      next(createHttpError(400, { errorsList: errors }));
     }
   } catch (error) {
     next(error);
