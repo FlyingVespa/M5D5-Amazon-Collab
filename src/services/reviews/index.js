@@ -11,17 +11,17 @@ import reviewValidation from "./reviewValidation.js";
 const reviewsRouter = express.Router();
 
 // PATHS
-const getFilePath = (filename) =>
+export const getFilePath = (filename) =>
   join(dirname(fileURLToPath(import.meta.url)), "../jsondata", filename);
 
 // READ File PARSED
-const readFile = async (name) => {
+export const readFile = async (name) => {
   const filePath = getFilePath(name);
   const jsonFile = await fs.readJSON(filePath);
   return jsonFile;
 };
 // WRITE
-const writeToFile = async (filename, content) => {
+export const writeToFile = async (filename, content) => {
   await fs.writeFileSync(getFilePath(filename), JSON.stringify(content));
 };
 
